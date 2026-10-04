@@ -72,8 +72,11 @@ export async function runGame<S, E>(def: GameDef<S, E>): Promise<void> {
   let busy = false; // 動きを見せている間・広告の間は入力を受けない
 
   const starsOf = (i: number) => record.stars[i] ?? 0;
+  // テストプレイ用。番地の後ろに ?unlock を付けて開くと、全ステージを遊べる（星の記録は変えない）
+  const unlockAll = new URLSearchParams(location.search).has('unlock');
   /** クリアした一番先のステージの、2つ先まで遊べる（1つ詰まっても先へ進める） */
   const unlocked = (i: number) => {
+    if (unlockAll) return true;
     let frontier = 0;
     for (let k = 0; k < def.levelCount; k++) if (starsOf(k) > 0) frontier = k + 1;
     return i <= frontier + 1;
